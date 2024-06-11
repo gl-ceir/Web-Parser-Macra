@@ -16,6 +16,7 @@ import com.glocks.web_parser.service.fileCopy.ListFileManagementService;
 import com.glocks.web_parser.service.fileOperations.FileOperations;
 import com.glocks.web_parser.service.operatorSeries.OperatorSeriesService;
 import com.glocks.web_parser.service.parser.ListMgmt.CommonFunctions;
+import com.glocks.web_parser.service.parser.ListMgmt.utils.BlockedTacUtils;
 import com.glocks.web_parser.validator.Validation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -51,6 +52,8 @@ public class BlockedTacBulkDel implements IRequestTypeAction {
     DbConfigService dbConfigService;
     @Autowired
     AlertService alertService;
+    @Autowired
+    BlockedTacUtils blockedTacUtils;
 
     @Override
     public  void executeInitProcess(WebActionDb webActionDb, ListDataMgmt listDataMgmt) {
@@ -75,7 +78,7 @@ public class BlockedTacBulkDel implements IRequestTypeAction {
             logger.info("File path is {}", filePath);
             if(!fileOperations.checkFileExists(filePath)) {
                 logger.error("File does not exists {}", filePath);
-                alertService.raiseAnAlert("alert5701", "List Mgmt Blocked Tac List", currentFileName, 0);
+                alertService.raiseAnAlert("alert5701", "List Mgmt Blocked Tac List", currentFileName + " with transaction id " + transactionId, 0);
 //                commonFunctions.updateFailStatus(webActionDb, listDataMgmt);
                 return ;
             }
@@ -129,7 +132,7 @@ public class BlockedTacBulkDel implements IRequestTypeAction {
                         failedCount++;
                         continue;
                     }
-                    boolean status = commonFunctions.processBlockedTacDelEntry(listDataMgmt, blockedTacDto, 0, writer);
+                    boolean status = blockedTacUtils.processBlockedTacDelEntry(listDataMgmt, blockedTacDto, 0, writer);
                     if(status) successCount++;
                     else failedCount++;
                 }

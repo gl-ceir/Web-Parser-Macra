@@ -15,6 +15,7 @@ import com.glocks.web_parser.service.fileCopy.ListFileManagementService;
 import com.glocks.web_parser.service.fileOperations.FileOperations;
 import com.glocks.web_parser.service.operatorSeries.OperatorSeriesService;
 import com.glocks.web_parser.service.parser.ListMgmt.CommonFunctions;
+import com.glocks.web_parser.service.parser.ListMgmt.utils.BlackListUtils;
 import com.glocks.web_parser.validator.Validation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -52,6 +53,8 @@ public class BlackBulkAdd implements IRequestTypeAction {
     DbConfigService dbConfigService;
     @Autowired
     AlertService alertService;
+    @Autowired
+    BlackListUtils blackListUtils;
     @Override
     public  void executeInitProcess(WebActionDb webActionDb, ListDataMgmt listDataMgmt) {
         logger.info("Starting the init process for black list, for request {} and action {}",
@@ -75,7 +78,7 @@ public class BlackBulkAdd implements IRequestTypeAction {
             logger.info("File path is {}", filePath);
             if(!fileOperations.checkFileExists(filePath)) {
                 logger.error("File does not exists {}", filePath);
-                alertService.raiseAnAlert("alert5701", "List Mgmt Black List", currentFileName, 0);
+                alertService.raiseAnAlert("alert5701", "List Mgmt Black List", currentFileName + " with transaction id " + transactionId, 0);
 //                commonFunctions.updateFailStatus(webActionDb, listDataMgmt);
                 return ;
             }
@@ -133,7 +136,7 @@ public class BlackBulkAdd implements IRequestTypeAction {
                         failedCount++;
                         continue;
                     }
-                    boolean status = commonFunctions.processBlackSingleAddEntry(listDataMgmt, listMgmtDto, 0, writer);
+                    boolean status = blackListUtils.processBlackSingleAddEntry(listDataMgmt, listMgmtDto, 0, writer);
                     if(status) successCount++;
                     else failedCount++;
                 }

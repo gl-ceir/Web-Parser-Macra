@@ -16,7 +16,7 @@ public class BlackListBuilder {
     public static BlackList forInsert(ListDataMgmt listDataMgmt, String operatorName) {
         BlackList blackList = new BlackList();
 
-        blackList.setImei(listDataMgmt.getImei() == null ? null : listDataMgmt.getImei().substring(0,14));
+        blackList.setImei(((listDataMgmt.getImei() == null) || (listDataMgmt.getImei().equalsIgnoreCase(""))) ? null : listDataMgmt.getImei().substring(0,14));
         blackList.setImsi(listDataMgmt.getImsi());
         blackList.setMsisdn(listDataMgmt.getMsisdn());
         blackList.setRemarks(listDataMgmt.getRemarks());
@@ -28,13 +28,13 @@ public class BlackListBuilder {
         blackList.setTxnId(listDataMgmt.getTransactionId());
         blackList.setUserId(listDataMgmt.getUserId());
 //        exceptionList.setUserType(listDataMgmt.getUserType());
-        blackList.setTac(listDataMgmt.getImei() == null ? null : listDataMgmt.getImei().substring(0,8));
+        blackList.setTac(((listDataMgmt.getImei() == null) || (listDataMgmt.getImei().equalsIgnoreCase(""))) ? null : listDataMgmt.getImei().substring(0,8));
         blackList.setSource("EIRSAdmin");
         return blackList;
     }
     public static BlackList forInsert(ListDataMgmt listDataMgmt, ListMgmtDto listMgmtDto, String operatorName) {
         BlackList blackList = new BlackList();
-        blackList.setImei(listMgmtDto.getImei() == null ? null : listMgmtDto.getImei().substring(0,14));
+        blackList.setImei(((listMgmtDto.getImei() == null) || (listMgmtDto.getImei().equalsIgnoreCase(""))) ? null : listMgmtDto.getImei().substring(0,14));
         blackList.setImsi(listMgmtDto.getImsi());
         blackList.setMsisdn(listMgmtDto.getMsisdn());
         blackList.setRemarks(listDataMgmt.getRemarks());
@@ -46,7 +46,7 @@ public class BlackListBuilder {
         blackList.setTxnId(listDataMgmt.getTransactionId());
         blackList.setUserId(listDataMgmt.getUserId());
 //        exceptionList.setUserType(listDataMgmt.getUserType());
-        blackList.setTac(listMgmtDto.getImei() == null ? null : listMgmtDto.getImei().substring(0,8));
+        blackList.setTac(((listMgmtDto.getImei() == null) || (listMgmtDto.getImei().equalsIgnoreCase(""))) ? null : listMgmtDto.getImei().substring(0,8));
         blackList.setSource("EIRSAdmin");
         return blackList;
     }

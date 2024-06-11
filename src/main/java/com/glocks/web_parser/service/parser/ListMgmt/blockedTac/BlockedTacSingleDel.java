@@ -11,6 +11,7 @@ import com.glocks.web_parser.service.fileCopy.ListFileManagementService;
 import com.glocks.web_parser.service.fileOperations.FileOperations;
 import com.glocks.web_parser.service.operatorSeries.OperatorSeriesService;
 import com.glocks.web_parser.service.parser.ListMgmt.CommonFunctions;
+import com.glocks.web_parser.service.parser.ListMgmt.utils.BlockedTacUtils;
 import com.glocks.web_parser.validator.Validation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,6 +42,8 @@ public class BlockedTacSingleDel implements IRequestTypeAction {
     CommonFunctions commonFunctions;
     @Autowired
     DbConfigService dbConfigService;
+    @Autowired
+    BlockedTacUtils blockedTacUtils;
 
     @Override
     public  void executeInitProcess(WebActionDb webActionDb, ListDataMgmt listDataMgmt) {
@@ -93,7 +96,7 @@ public class BlockedTacSingleDel implements IRequestTypeAction {
             File outFile = new File(appConfig.getListMgmtFilePath() + "/" + listDataMgmt.getTransactionId() + "/" + listDataMgmt.getTransactionId()+ ".csv");
             PrintWriter writer = new PrintWriter(outFile);
             writer.println("TAC,Reason");
-            boolean status = commonFunctions.processBlockedTacDelEntry(listDataMgmt, null, 1, writer);
+            boolean status = blockedTacUtils.processBlockedTacDelEntry(listDataMgmt, null, 1, writer);
             writer.close();
             listFileManagementService.saveListManagementEntity(listDataMgmt.getTransactionId(), ListType.BLOCKEDTACLIST, FileType.SINGLE,
                     appConfig.getListMgmtFilePath() + "/" + listDataMgmt.getTransactionId() + "/",

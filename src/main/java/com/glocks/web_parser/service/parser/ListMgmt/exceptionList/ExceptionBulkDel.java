@@ -14,6 +14,7 @@ import com.glocks.web_parser.service.fileCopy.ListFileManagementService;
 import com.glocks.web_parser.service.fileOperations.FileOperations;
 import com.glocks.web_parser.service.operatorSeries.OperatorSeriesService;
 import com.glocks.web_parser.service.parser.ListMgmt.CommonFunctions;
+import com.glocks.web_parser.service.parser.ListMgmt.utils.ExceptionListUtils;
 import com.glocks.web_parser.validator.Validation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -48,6 +49,8 @@ public class ExceptionBulkDel  implements IRequestTypeAction {
     DbConfigService dbConfigService;
     @Autowired
     AlertService alertService;
+    @Autowired
+    ExceptionListUtils exceptionListUtils;
 
     @Override
     public  void executeInitProcess(WebActionDb webActionDb, ListDataMgmt listDataMgmt) {
@@ -72,7 +75,7 @@ public class ExceptionBulkDel  implements IRequestTypeAction {
             logger.info("File path is {}", filePath);
             if(!fileOperations.checkFileExists(filePath)) {
                 logger.error("File does not exists {}", filePath);
-                alertService.raiseAnAlert("alert5701", "List Mgmt Exception List", currentFileName, 0);
+                alertService.raiseAnAlert("alert5701", "List Mgmt Exception List", currentFileName + " with transaction id " + transactionId, 0);
 //                commonFunctions.updateFailStatus(webActionDb, listDataMgmt);
                 return ;
             }
@@ -133,7 +136,7 @@ public class ExceptionBulkDel  implements IRequestTypeAction {
                         failedCount++;
                         continue;
                     }
-                    boolean status = commonFunctions.processExceptionSingleDelEntry(listDataMgmt, listMgmtDto, 0, writer);
+                    boolean status = exceptionListUtils.processExceptionSingleDelEntry(listDataMgmt, listMgmtDto, 0, writer);
                     if(status) successCount++;
                     else failedCount++;
                 }

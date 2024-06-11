@@ -10,6 +10,7 @@ import com.glocks.web_parser.service.fileCopy.ListFileManagementService;
 import com.glocks.web_parser.service.fileOperations.FileOperations;
 import com.glocks.web_parser.service.operatorSeries.OperatorSeriesService;
 import com.glocks.web_parser.service.parser.ListMgmt.CommonFunctions;
+import com.glocks.web_parser.service.parser.ListMgmt.utils.ExceptionListUtils;
 import com.glocks.web_parser.validator.Validation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -42,6 +43,8 @@ public class ExceptionSingleAdd implements IRequestTypeAction {
     SysParamRepository sysParamRepository;
     @Autowired
     DbConfigService dbConfigService;
+    @Autowired
+    ExceptionListUtils exceptionListUtils;
 
     @Override
     public  void executeInitProcess(WebActionDb webActionDb, ListDataMgmt listDataMgmt) {
@@ -100,7 +103,7 @@ public class ExceptionSingleAdd implements IRequestTypeAction {
             File outFile = new File(appConfig.getListMgmtFilePath() + "/" + listDataMgmt.getTransactionId() + "/" + listDataMgmt.getTransactionId()+ ".csv");
             PrintWriter writer = new PrintWriter(outFile);
             writer.println("MSISDN,IMSI,IMEI,Reason");
-            boolean status = commonFunctions.processExceptionSingleAddEntry(listDataMgmt, null, 1, writer);
+            boolean status = exceptionListUtils.processExceptionSingleAddEntry(listDataMgmt, null, 1, writer);
             writer.close();
             listFileManagementService.saveListManagementEntity(listDataMgmt.getTransactionId(), ListType.EXCEPTIONLIST, FileType.SINGLE,
                     appConfig.getListMgmtFilePath() + "/" + listDataMgmt.getTransactionId() + "/",

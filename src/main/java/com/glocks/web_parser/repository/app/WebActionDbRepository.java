@@ -22,7 +22,7 @@ public interface WebActionDbRepository extends JpaRepository<WebActionDb, Long>{
 //    List<WebActionDb> getListOfPendingTasks(@Param("feature") List<String> feature, int min);
 //    getListOfPendingTasks(@Param("feature") List<String> feature, @Param("min") int min);
     @Query(value = "SELECT * FROM (SELECT * FROM web_action_db u WHERE u.state NOT IN (4, 5) AND u.created_on <= SYSDATE - (1/24/60 * :min) AND u.feature IN (:feature) ORDER BY u.state, u.id ASC) WHERE ROWNUM <= 1", nativeQuery = true)
-    List<WebActionDb> getListOfPendingTasks(@Param("feature") List<String> feature, int min);
+    List<WebActionDb> getListOfPendingTasks(@Param("feature") List<String> feature, @Param("min") int min);
 
 
 
