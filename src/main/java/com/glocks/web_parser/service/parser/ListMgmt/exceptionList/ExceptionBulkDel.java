@@ -75,7 +75,7 @@ public class ExceptionBulkDel  implements IRequestTypeAction {
             logger.info("File path is {}", filePath);
             if(!fileOperations.checkFileExists(filePath)) {
                 logger.error("File does not exists {}", filePath);
-                alertService.raiseAnAlert("alert5701", "List Mgmt Exception List", currentFileName + " with transaction id " + transactionId, 0);
+                alertService.raiseAnAlert(transactionId,"alert5701", "List Mgmt Exception List", currentFileName + " with transaction id " + transactionId, 0);
 //                commonFunctions.updateFailStatus(webActionDb, listDataMgmt);
                 return ;
             }

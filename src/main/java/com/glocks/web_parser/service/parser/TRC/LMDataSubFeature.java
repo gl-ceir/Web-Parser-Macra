@@ -89,7 +89,7 @@ public class LMDataSubFeature {
 
             logger.info("File path is {}", filePath);
             if(!fileOperations.checkFileExists(filePath)) {
-                alertService.raiseAnAlert("alert6001", "LM", currentFileName, 0);
+                alertService.raiseAnAlert(transactionId,"alert6001", "LM", currentFileName, 0);
                 logger.error("File does not exists {}", filePath);
 //                updateFailStatus(webActionDb, trcDataMgmt, dbConfigService.getValue("msgForRemarksForInternalErrorInLM"), "alert6001", "LM", currentFileName);
                 return ;
@@ -308,7 +308,7 @@ public class LMDataSubFeature {
                           String type, String fileName) {
         webActionDbRepository.updateWebActionStatus(5, webActionDb.getId());
         trcDataMgmtRepository.updateTrcDataMgmtStatus("FAIL", LocalDateTime.now(), remarks,trcDataMgmt.getId());
-        alertService.raiseAnAlert(alertId, type, fileName, 0);
+        alertService.raiseAnAlert(webActionDb.getTxnId(),alertId, type, fileName, 0);
     }
 
     void updateFailStatus(WebActionDb webActionDb, TrcDataMgmt trcDataMgmt, String remarks, String alertId,
@@ -317,7 +317,7 @@ public class LMDataSubFeature {
         webActionDbRepository.updateWebActionStatus(5, webActionDb.getId());
         trcDataMgmtRepository.updateTrcDataMgmtStatus("FAIL", LocalDateTime.now(), remarks,trcDataMgmt.getId(),
                 totalCount, addCount, deleteCount, failureCount);
-        alertService.raiseAnAlert(alertId, type, fileName, 0);
+        alertService.raiseAnAlert(webActionDb.getTxnId(), alertId, type, fileName, 0);
     }
 
 

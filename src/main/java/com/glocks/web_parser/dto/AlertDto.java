@@ -19,4 +19,7 @@ public class AlertDto {
     private String alertProcess;
 
     private String userId;
+    private String serverName;
+    private String featureName;
+    private String txnId;
 }

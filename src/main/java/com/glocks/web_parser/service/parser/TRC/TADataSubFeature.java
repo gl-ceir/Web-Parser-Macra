@@ -78,7 +78,7 @@ public class TADataSubFeature {
                     "trc_data_ta_dump_add_"+ date+".csv";
             if(!fileOperations.checkFileExists(filePath)) {
                 logger.error("File does not exists {}", filePath);
-                alertService.raiseAnAlert("alert6001", "TA", currentFileName, 0);
+                alertService.raiseAnAlert(transactionId,"alert6001", "TA", currentFileName, 0);
 //                updateFailStatus(webActionDb, trcDataMgmt, dbConfigService.getValue("msgForRemarksForInternalErrorInTA"), "alert6001", "TA", currentFileName);
                 return ;
             }
@@ -100,7 +100,7 @@ public class TADataSubFeature {
             logger.info("Sorted file is {}" ,sortedFilePath );
             // sort the current file
             if(!fileOperations.sortFile(filePath, sortedFilePath)) {
-                alertService.raiseAnAlert("alert6003", "while sorting file for TRC TA", currentFileName, 0);
+                alertService.raiseAnAlert(transactionId,"alert6003", "while sorting file for TRC TA", currentFileName, 0);
                 return ;
             }
 
@@ -109,7 +109,7 @@ public class TADataSubFeature {
                 // copy the contents of current file as it is in add file but sort the file.
                 boolean output = fileOperations.copy(currFile, deltaAddFile, deltaDeleteFile);
                 if(!output) {
-                    alertService.raiseAnAlert("alert6003", "while creating diff file for TRC TA", currentFileName, 0);
+                    alertService.raiseAnAlert(transactionId,"alert6003", "while creating diff file for TRC TA", currentFileName, 0);
                     return ;
                 }
             }
@@ -127,12 +127,12 @@ public class TADataSubFeature {
                 // create diff
 
                 if(fileOperations.createDiffFiles(sortedFilePath, previousProcessedFilePath, deltaDeleteFile, 0)) {
-                    alertService.raiseAnAlert("alert6003", "while creating diff file for TRC TA", currentFileName, 0);
+                    alertService.raiseAnAlert(transactionId,"alert6003", "while creating diff file for TRC TA", currentFileName, 0);
                     return ;
                 }
 
                 if(fileOperations.createDiffFiles(sortedFilePath, previousProcessedFilePath, deltaAddFile, 1)) {
-                    alertService.raiseAnAlert("alert6003", "while creating diff file for TRC TA", currentFileName, 0);
+                    alertService.raiseAnAlert(transactionId,"alert6003", "while creating diff file for TRC TA", currentFileName, 0);
                     return ;
                 }
                 logger.info("Diff file creation successful");
@@ -287,7 +287,7 @@ public class TADataSubFeature {
                           String type, String fileName) {
         webActionDbRepository.updateWebActionStatus(5, webActionDb.getId());
         trcDataMgmtRepository.updateTrcDataMgmtStatus("FAIL", LocalDateTime.now(), remarks,trcDataMgmt.getId());
-        alertService.raiseAnAlert(alertId, type, fileName, 0);
+        alertService.raiseAnAlert(webActionDb.getTxnId(), alertId, type, fileName, 0);
     }
     void updateFailStatus(WebActionDb webActionDb, TrcDataMgmt trcDataMgmt, String remarks, String alertId,
                           String type, String fileName,
@@ -295,7 +295,7 @@ public class TADataSubFeature {
         webActionDbRepository.updateWebActionStatus(5, webActionDb.getId());
         trcDataMgmtRepository.updateTrcDataMgmtStatus("FAIL", LocalDateTime.now(), remarks,trcDataMgmt.getId(),
                 totalCount, addCount, deleteCount, failureCount);
-        alertService.raiseAnAlert(alertId, type, fileName, 0);
+        alertService.raiseAnAlert(webActionDb.getTxnId(), alertId, type, fileName, 0);
     }
 
     void updateSuccessStatus(WebActionDb webActionDb, TrcDataMgmt trcDataMgmt, String remarks) {

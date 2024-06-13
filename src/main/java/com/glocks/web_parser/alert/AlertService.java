@@ -21,14 +21,17 @@ public class AlertService implements IAlert{
     AppConfig appConfig;
 
     private RestTemplate restTemplate = null;
-    public void raiseAnAlert(final String alertId, final String alertMessage, final String alertProcess, final int userId) {
+    public void raiseAnAlert(final String txnId, final String alertId, final String alertMessage, final String alertProcess,
+                             final int userId) {
 
             AlertDto alertDto = new AlertDto();
             alertDto.setAlertId(alertId);
             alertDto.setUserId(String.valueOf(userId));
             alertDto.setAlertMessage(alertMessage);
             alertDto.setAlertProcess(alertProcess);
-
+            alertDto.setServerName(appConfig.getSourceServerName());
+            alertDto.setFeatureName("Web Parser");
+            alertDto.setTxnId(txnId);
 
             long start = System.currentTimeMillis();
             try {

@@ -107,7 +107,7 @@ public class CheckImeiSubFeature {
             logger.info("File path is {}", filePath);
             if(!fileOperations.checkFileExists(filePath)) {
                 logger.error("File does not exists {}", filePath);
-                alertService.raiseAnAlert("alert6001", "Bulk Check IMEI", currentFileName, 0);
+                alertService.raiseAnAlert(transactionId,"alert6001", "Bulk Check IMEI", currentFileName, 0);
 //                utilFunctions.updateFailStatus(webActionDb, bulkCheckImeiMgmt);
                 return ;
             }
