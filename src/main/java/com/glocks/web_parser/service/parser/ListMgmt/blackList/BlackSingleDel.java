@@ -86,7 +86,7 @@ public class BlackSingleDel implements IRequestTypeAction {
                 writer.println((msisdn == null ? "":msisdn) + "," + (imsi==null? "":imsi) + "," + (imei==null?"":imei)+","+dbConfigService.getValue(validateOutput));
                 commonFunctions.updateFailStatus(webActionDb, listDataMgmt, 1, 0, 1);
                 writer.close();
-                listFileManagementService.saveListManagementEntity(listDataMgmt.getTransactionId(), ListType.BLACKLIST, FileType.SINGLE,
+                listFileManagementService.saveListManagementEntity(listDataMgmt.getTransactionId(), ListType.OTHERS, FileType.SINGLE,
                         appConfig.getListMgmtFilePath() + "/" + listDataMgmt.getTransactionId() + "/",
                         listDataMgmt.getTransactionId() + ".csv", 1L);
                 return;
@@ -107,7 +107,7 @@ public class BlackSingleDel implements IRequestTypeAction {
             writer.println("MSISDN,IMSI,IMEI,Reason");
             boolean status = blackListUtils.processBlackSingleDelEntry(listDataMgmt, null, 1, writer);
             writer.close();
-            listFileManagementService.saveListManagementEntity(listDataMgmt.getTransactionId(), ListType.BLACKLIST, FileType.SINGLE,
+            listFileManagementService.saveListManagementEntity(listDataMgmt.getTransactionId(), ListType.OTHERS, FileType.SINGLE,
                     appConfig.getListMgmtFilePath() + "/" + listDataMgmt.getTransactionId() + "/",
                     listDataMgmt.getTransactionId() + ".csv", 1L);
             if(status) {

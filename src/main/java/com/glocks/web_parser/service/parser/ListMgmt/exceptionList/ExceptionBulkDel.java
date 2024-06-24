@@ -141,7 +141,7 @@ public class ExceptionBulkDel  implements IRequestTypeAction {
                     else failedCount++;
                 }
                 writer.close();
-                listFileManagementService.saveListManagementEntity(listDataMgmt.getTransactionId(), ListType.EXCEPTIONLIST, FileType.BULK,
+                listFileManagementService.saveListManagementEntity(listDataMgmt.getTransactionId(), ListType.OTHERS, FileType.BULK,
                         appConfig.getListMgmtFilePath() + "/" + listDataMgmt.getTransactionId() + "/",
                         listDataMgmt.getTransactionId() + ".csv", currFile.getTotalRecords());
                 currFile.setSuccessRecords(successCount);

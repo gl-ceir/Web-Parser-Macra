@@ -77,7 +77,7 @@ public class BlockedTacSingleDel implements IRequestTypeAction {
                 writer.println((tac==null?"":tac) + "," + dbConfigService.getValue(validateOutput));
                 commonFunctions.updateFailStatus(webActionDb, listDataMgmt, 1, 0, 1);
                 writer.close();
-                listFileManagementService.saveListManagementEntity(listDataMgmt.getTransactionId(), ListType.BLOCKEDTACLIST, FileType.SINGLE,
+                listFileManagementService.saveListManagementEntity(listDataMgmt.getTransactionId(), ListType.OTHERS, FileType.SINGLE,
                         appConfig.getListMgmtFilePath() + "/" + listDataMgmt.getTransactionId() + "/",
                         listDataMgmt.getTransactionId() + ".csv", 1L);
                 return;
@@ -98,7 +98,7 @@ public class BlockedTacSingleDel implements IRequestTypeAction {
             writer.println("TAC,Reason");
             boolean status = blockedTacUtils.processBlockedTacDelEntry(listDataMgmt, null, 1, writer);
             writer.close();
-            listFileManagementService.saveListManagementEntity(listDataMgmt.getTransactionId(), ListType.BLOCKEDTACLIST, FileType.SINGLE,
+            listFileManagementService.saveListManagementEntity(listDataMgmt.getTransactionId(), ListType.OTHERS, FileType.SINGLE,
                     appConfig.getListMgmtFilePath() + "/" + listDataMgmt.getTransactionId() + "/",
                     listDataMgmt.getTransactionId() + ".csv", 1L);
             if(status) {
