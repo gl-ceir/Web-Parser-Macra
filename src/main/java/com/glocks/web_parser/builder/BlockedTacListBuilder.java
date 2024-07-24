@@ -20,7 +20,7 @@ public class BlockedTacListBuilder {
         blockedTacList.setRequestType(listDataMgmt.getCategory());
         blockedTacList.setTxnId(listDataMgmt.getTransactionId());
         blockedTacList.setUserId(listDataMgmt.getUserId());
-        blockedTacList.setSource("EIRSAdmin");
+        blockedTacList.setSource("CEIRAdmin");
         return blockedTacList;
     }
 
@@ -32,7 +32,7 @@ public class BlockedTacListBuilder {
         blockedTacList.setTxnId(listDataMgmt.getTransactionId());
         blockedTacList.setUserId(listDataMgmt.getUserId());
         blockedTacList.setTac(blockedTacDto.getTac());
-        blockedTacList.setSource("EIRSAdmin");
+        blockedTacList.setSource("CEIRAdmin");
         return blockedTacList;
     }
 
