@@ -28,7 +28,7 @@ public class ExceptionListBuilder {
         exceptionList.setUserId(listDataMgmt.getUserId());
 //        exceptionList.setUserType(listDataMgmt.getUserType());
         exceptionList.setTac(((listDataMgmt.getImei() == null) || (listDataMgmt.getImei().equalsIgnoreCase(""))) ? null : listDataMgmt.getImei().substring(0,8));
-        exceptionList.setSource("EIRSAdmin");
+        exceptionList.setSource("CEIRAdmin");
         return exceptionList;
     }
 
@@ -47,7 +47,7 @@ public class ExceptionListBuilder {
         exceptionList.setUserId(listDataMgmt.getUserId());
 //        exceptionList.setUserType(listDataMgmt.getUserType());
         exceptionList.setTac(((listMgmtDto.getImei() == null) || (listMgmtDto.getImei().equalsIgnoreCase(""))) ? null : listMgmtDto.getImei().substring(0,8));
-        exceptionList.setSource("EIRSAdmin");
+        exceptionList.setSource("CEIRAdmin");
         return exceptionList;
     }
 
