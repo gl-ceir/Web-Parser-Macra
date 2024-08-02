@@ -3,7 +3,9 @@ package com.glocks.web_parser.builder;
 import com.glocks.web_parser.model.app.BlackList;
 import com.glocks.web_parser.model.app.BlackListHis;
 import com.glocks.web_parser.model.app.ListDataMgmt;
+import com.glocks.web_parser.repository.app.SysParamRepository;
 import lombok.Builder;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -28,6 +30,8 @@ public class BlackListHisBuilder {
 
         blackListHis.setTac(blackList.getTac());
         blackListHis.setSource(blackList.getSource());
+        blackListHis.setReason(blackList.getReason());
+        blackListHis.setClarifyReason(blackList.getClarifyReason());
         return blackListHis;
     }
 }

@@ -31,6 +31,8 @@ public class ExceptionListHisBuilder {
 
         exceptionListHis.setTac(exceptionList.getTac());
         exceptionListHis.setSource(exceptionList.getSource());
+        exceptionListHis.setReason(exceptionList.getReason());
+        exceptionListHis.setClarifyReason(exceptionList.getClarifyReason());
         return exceptionListHis;
     }
 }
