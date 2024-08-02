@@ -19,4 +19,6 @@ public class GreyList {
 
     @Column(name="msisdn")
     String msisdn;
+
+
 }
