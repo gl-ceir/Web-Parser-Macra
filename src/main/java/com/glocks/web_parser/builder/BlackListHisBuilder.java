@@ -28,6 +28,8 @@ public class BlackListHisBuilder {
 
         blackListHis.setTac(blackList.getTac());
         blackListHis.setSource(blackList.getSource());
+        blackListHis.setReason(blackList.getReason());
+        blackListHis.setClarifyReason(blackList.getClarifyReason());
         return blackListHis;
     }
 }

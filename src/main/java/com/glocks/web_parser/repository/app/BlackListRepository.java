@@ -2,12 +2,17 @@ package com.glocks.web_parser.repository.app;
 
 import com.glocks.web_parser.model.app.BlackList;
 
+import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import java.sql.SQLException;
 import java.util.List;
 
 @Repository
+@Transactional(rollbackOn = {SQLException.class})
 public interface BlackListRepository extends JpaRepository<BlackList, Integer> {
 
 
@@ -24,5 +29,9 @@ public interface BlackListRepository extends JpaRepository<BlackList, Integer> {
     BlackList findBlackListByImei(String imei);
 
     BlackList findBlackListByMsisdn(String msisdn);
+
+    @Modifying
+    @Query("UPDATE BlackList x SET x.source =:source WHERE x.imei =:imei")
+    public int updateSource(String source, String imei);
 
 }

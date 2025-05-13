@@ -4,19 +4,23 @@ import com.glocks.web_parser.model.app.BlackList;
 import com.glocks.web_parser.model.app.BlockedTacList;
 import com.glocks.web_parser.model.app.ExceptionList;
 import com.glocks.web_parser.model.app.GreyList;
-import com.glocks.web_parser.repository.app.BlackListRepository;
-import com.glocks.web_parser.repository.app.BlockedTacListRepository;
-import com.glocks.web_parser.repository.app.ExceptionListRepository;
-import com.glocks.web_parser.repository.app.GreyListRepository;
+import com.glocks.web_parser.repository.app.*;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Arrays;
+import java.util.Objects;
+import java.util.stream.Collectors;
+
 @Service
 public class DbClass {
-
+    private final Logger logger = LogManager.getLogger(this.getClass());
     @Autowired
     BlackListRepository blackListRepository;
-
+    @Autowired
+    GreyListRepository greyListRepository;
     @Autowired
     ExceptionListRepository exceptionListRepository;
 
@@ -24,7 +28,11 @@ public class DbClass {
     BlockedTacListRepository blockedTacListRepository;
 
     @Autowired
-    GreyListRepository greyListRepository;
+    ExceptionListHisRepository exceptionListHisRepository;
+
+    @Autowired
+    BlackListHisRepository blackListHisRepository;
+
 
     public GreyList getGreyListEntry(boolean imsiEmpty, boolean msisdnEmpty, boolean imeiEmpty, String imei,
                                      String imsi, String msisdn) {
@@ -69,7 +77,8 @@ public class DbClass {
         return blackList;
 
     }
-    public ExceptionList getExceptionListEntry(boolean imsiEmpty, boolean msisdnEmpty,boolean imeiEmpty, String imei,
+
+    public ExceptionList getExceptionListEntry(boolean imsiEmpty, boolean msisdnEmpty, boolean imeiEmpty, String imei,
                                                String imsi, String msisdn) {
 
         ExceptionList exceptionList = null;
@@ -90,11 +99,37 @@ public class DbClass {
         }
         return exceptionList;
     }
-    public BlockedTacList  getBlockedTacEntry(boolean tacEmpty, String tac) {
+
+    public BlockedTacList getBlockedTacEntry(boolean tacEmpty, String tac) {
         BlockedTacList blockedTacList = null;
         if (!tacEmpty) {
             blockedTacList = blockedTacListRepository.findBlockedTacListByTac(tac);
         }
         return blockedTacList;
+    }
+
+    public String remove(String source) {
+        if (Objects.nonNull(source)) {
+            return Arrays.stream(source.split(",")).filter(element -> !element.equals("CEIRAdmin")).collect(Collectors.joining(","));
+        } else {
+            logger.info("No source value {} found", source);
+        }
+        return null;
+    }
+
+    public void updateSource(String source, String imei, String repo) {
+        logger.info("Updated {} with source {} for imei {}", repo, source, imei);
+        int rowAffected = 0;
+        switch (repo) {
+            case "BLACK_LIST" -> rowAffected = blackListRepository.updateSource(source, imei);
+            case "BLACK_LIST_HIS" -> rowAffected = blackListHisRepository.updateSource(source, imei);
+            case "EXCEPTION_LIST" -> rowAffected = exceptionListRepository.updateSource(source, imei);
+            case "EXCEPTION_LIST_HIS" -> rowAffected = exceptionListHisRepository.updateSource(source, imei);
+        }
+        if (rowAffected == 1) {
+            logger.info("updated source value for {}", repo);
+        } else {
+            logger.info("Failed to update source value for {}", repo);
+        }
     }
 }

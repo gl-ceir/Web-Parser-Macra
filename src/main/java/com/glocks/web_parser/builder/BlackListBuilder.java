@@ -29,7 +29,8 @@ public class BlackListBuilder {
         blackList.setUserId(listDataMgmt.getUserId());
 //        exceptionList.setUserType(listDataMgmt.getUserType());
         blackList.setTac(((listDataMgmt.getImei() == null) || (listDataMgmt.getImei().equalsIgnoreCase(""))) ? null : listDataMgmt.getImei().substring(0,8));
-        blackList.setSource("CEIRAdmin");
+        String source = listDataMgmt.getCategory().equalsIgnoreCase("FRAUD") ? listDataMgmt.getCategory() : "CEIRAdmin";
+        blackList.setSource(source);
         return blackList;
     }
     public static BlackList forInsert(ListDataMgmt listDataMgmt, ListMgmtDto listMgmtDto, String operatorName) {
@@ -47,7 +48,8 @@ public class BlackListBuilder {
         blackList.setUserId(listDataMgmt.getUserId());
 //        exceptionList.setUserType(listDataMgmt.getUserType());
         blackList.setTac(((listMgmtDto.getImei() == null) || (listMgmtDto.getImei().equalsIgnoreCase(""))) ? null : listMgmtDto.getImei().substring(0,8));
-        blackList.setSource("CEIRAdmin");
+        String source = listDataMgmt.getCategory().equalsIgnoreCase("FRAUD") ? listDataMgmt.getCategory() : "CEIRAdmin";
+        blackList.setSource(source);
         return blackList;
     }
 }

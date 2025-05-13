@@ -50,6 +50,7 @@ public class BlackSingleDel implements IRequestTypeAction {
 
     @Override
     public  void executeInitProcess(WebActionDb webActionDb, ListDataMgmt listDataMgmt) {
+        logger.info("listDataMgmt request {}", listDataMgmt);
         logger.info("Starting the init process for black list, for request {} and action {}",
                 listDataMgmt.getRequestMode(), listDataMgmt.getAction());
 
@@ -112,7 +113,8 @@ public class BlackSingleDel implements IRequestTypeAction {
                     listDataMgmt.getTransactionId() + ".csv", 1L);
             if(status) {
                 commonFunctions.updateSuccessStatus(webActionDb, listDataMgmt, 1, 1, 0);
-            } else commonFunctions.updateFailStatus(webActionDb, listDataMgmt, 1, 0, 1);
+            }
+            else commonFunctions.updateFailStatus(webActionDb, listDataMgmt, 1, 0, 1);
         } catch (Exception ex) {
             logger.error("Error while processing the entry for black list, for request {} and action {}",
                     listDataMgmt.getRequestType(), listDataMgmt.getAction());

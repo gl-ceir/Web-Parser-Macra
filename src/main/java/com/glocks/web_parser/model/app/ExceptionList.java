@@ -69,4 +69,7 @@ public class ExceptionList {
 
     @Column(name="source_of_request")
     String source;
+    String reason;
+    @Column(name="clarify_reason")
+    String clarifyReason;
 }

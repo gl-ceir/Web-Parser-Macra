@@ -9,6 +9,7 @@ import com.glocks.web_parser.model.app.*;
 import com.glocks.web_parser.repository.app.ExceptionListHisRepository;
 import com.glocks.web_parser.repository.app.ExceptionListRepository;
 import com.glocks.web_parser.repository.app.ListDataMgmtRepository;
+import com.glocks.web_parser.repository.app.SysParamRepository;
 import com.glocks.web_parser.service.operatorSeries.OperatorSeriesService;
 import com.glocks.web_parser.service.parser.ListMgmt.db.DbClass;
 import com.glocks.web_parser.validator.Validation;
@@ -29,6 +30,10 @@ public class ExceptionListUtils {
     ListDataMgmtRepository listDataMgmtRepository;
     @Autowired
     AppConfig appConfig;
+
+    @Autowired
+    SysParamRepository sysParamRepository;
+
 
     @Autowired
     ExceptionListRepository exceptionListRepository;
@@ -90,6 +95,9 @@ public class ExceptionListUtils {
                     return false;
                 }
                 logger.info("Entry save in exception list {}",exceptionList);
+                exceptionList.setReason(sysParamRepository.getValueFromTag("exceptionListAddReasonCode"));
+                exceptionList.setClarifyReason(sysParamRepository.getValueFromTag("exceptionListAddClarifyReason"));
+
                 exceptionListRepository.save(exceptionList);
                 ExceptionListHis exceptionListHisEntity = ExceptionListHisBuilder.forInsert(exceptionList, 1, listDataMgmt);
                 logger.info("Entry save in exception list his {}", exceptionListHisEntity);
@@ -125,6 +133,8 @@ public class ExceptionListUtils {
             // if present write in file and exit.
             if (exceptionList != null) {
                 logger.info("The entry exists {}", exceptionList);
+                exceptionList.setReason(sysParamRepository.getValueFromTag("exceptionListDelReasonCode"));
+                exceptionList.setClarifyReason(sysParamRepository.getValueFromTag("exceptionListDelClarifyReason"));
                 exceptionListRepository.delete(exceptionList);
                 logger.info("Entry deleted in exception list {}", exceptionList);
                 ExceptionListHis exceptionListHisEntity = ExceptionListHisBuilder.forInsert(exceptionList, 0, listDataMgmt);
