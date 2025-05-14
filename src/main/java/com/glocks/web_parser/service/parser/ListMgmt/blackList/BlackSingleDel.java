@@ -51,9 +51,6 @@ public class BlackSingleDel implements IRequestTypeAction {
     @Override
     public  void executeInitProcess(WebActionDb webActionDb, ListDataMgmt listDataMgmt) {
         logger.info("listDataMgmt request {}", listDataMgmt);
-        logger.info("Starting the init process for black list, for request {} and action {}",
-                listDataMgmt.getRequestMode(), listDataMgmt.getAction());
-
         webActionDbRepository.updateWebActionStatus(2, webActionDb.getId());
         executeValidateProcess(webActionDb, listDataMgmt);
 
@@ -61,8 +58,6 @@ public class BlackSingleDel implements IRequestTypeAction {
 
     @Override
     public void executeValidateProcess(WebActionDb webActionDb, ListDataMgmt listDataMgmt) {
-        logger.info("Starting the validate process for black list, for request {} and action {}",
-                listDataMgmt.getRequestMode(), listDataMgmt.getAction());
         String imsiPrefixValue = sysParamRepository.getValueFromTag("imsiPrefix");
         String msisdnPrefixValue = sysParamRepository.getValueFromTag("msisdnPrefix");
         // single and add

@@ -12,7 +12,6 @@ import java.sql.SQLException;
 import java.util.List;
 
 @Repository
-@Transactional(rollbackOn = {SQLException.class})
 public interface BlackListRepository extends JpaRepository<BlackList, Integer> {
 
 
@@ -30,8 +29,9 @@ public interface BlackListRepository extends JpaRepository<BlackList, Integer> {
 
     BlackList findBlackListByMsisdn(String msisdn);
 
+    @Transactional(rollbackOn = {SQLException.class})
     @Modifying
-    @Query("UPDATE BlackList x SET x.source =:source WHERE x.imei =:imei")
-    public int updateSource(String source, String imei);
+    @Query("UPDATE BlackList x SET x.source =:source WHERE x.imei =:imei AND x.imsi =:imsi AND x.msisdn=:msisdn")
+    public int updateSource(String source, String imei, String imsi, String msisdn);
 
 }

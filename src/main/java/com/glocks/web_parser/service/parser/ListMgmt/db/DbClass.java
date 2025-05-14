@@ -5,6 +5,7 @@ import com.glocks.web_parser.model.app.BlockedTacList;
 import com.glocks.web_parser.model.app.ExceptionList;
 import com.glocks.web_parser.model.app.GreyList;
 import com.glocks.web_parser.repository.app.*;
+import com.glocks.web_parser.validator.Validation;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,6 +34,8 @@ public class DbClass {
     @Autowired
     BlackListHisRepository blackListHisRepository;
 
+    @Autowired
+    Validation validation;
 
     public GreyList getGreyListEntry(boolean imsiEmpty, boolean msisdnEmpty, boolean imeiEmpty, String imei,
                                      String imsi, String msisdn) {
@@ -117,19 +120,24 @@ public class DbClass {
         return null;
     }
 
-    public void updateSource(String source, String imei, String repo) {
-        logger.info("Updated {} with source {} for imei {}", repo, source, imei);
+    public void updateSource(String source, BlackList blackList, String repo) {
+        logger.info("Updated {} with source {} for imei {}", repo, source, blackList.getImei());
+
+        String imsi = validation.isEmptyAndNull(blackList.getImsi()) ? null : blackList.getImsi();
+        String msisdn = validation.isEmptyAndNull(blackList.getMsisdn()) ? null : blackList.getMsisdn();
+        String imei = validation.isEmptyAndNull(blackList.getImei()) ? null : blackList.getImei();
+        logger.info("The corresponding row in the black_list  will be updated based on the imsi {} , msisdn {} and imei {}", imsi, msisdn, imei);
+
         int rowAffected = 0;
-        switch (repo) {
-            case "BLACK_LIST" -> rowAffected = blackListRepository.updateSource(source, imei);
-            case "BLACK_LIST_HIS" -> rowAffected = blackListHisRepository.updateSource(source, imei);
-            case "EXCEPTION_LIST" -> rowAffected = exceptionListRepository.updateSource(source, imei);
-            case "EXCEPTION_LIST_HIS" -> rowAffected = exceptionListHisRepository.updateSource(source, imei);
-        }
-        if (rowAffected == 1) {
-            logger.info("updated source value for {}", repo);
-        } else {
-            logger.info("Failed to update source value for {}", repo);
+        try {
+            switch (repo) {
+                case "BLACK_LIST" -> rowAffected = blackListRepository.updateSource(source, imei, imsi, msisdn);
+            }
+            if (rowAffected > 0) {
+                logger.info("updated source value for {}", repo);
+            }
+        } catch (Exception e) {
+            logger.error("Exception occured during update the entry for imei {} with message {}", imei, e.getCause());
         }
     }
 }

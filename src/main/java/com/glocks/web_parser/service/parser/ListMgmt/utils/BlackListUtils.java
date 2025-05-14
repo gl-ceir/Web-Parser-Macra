@@ -5,6 +5,7 @@ import com.glocks.web_parser.builder.BlackListBuilder;
 import com.glocks.web_parser.builder.BlackListHisBuilder;
 import com.glocks.web_parser.config.AppConfig;
 import com.glocks.web_parser.config.DbConfigService;
+import com.glocks.web_parser.constants.CategoryType;
 import com.glocks.web_parser.dto.ListMgmtDto;
 import com.glocks.web_parser.model.app.*;
 import com.glocks.web_parser.repository.app.BlackListHisRepository;
@@ -13,11 +14,13 @@ import com.glocks.web_parser.repository.app.ListDataMgmtRepository;
 
 import com.glocks.web_parser.repository.app.SysParamRepository;
 import com.glocks.web_parser.service.operatorSeries.OperatorSeriesService;
+import com.glocks.web_parser.service.parser.ListMgmt.CommonFunctions;
 import com.glocks.web_parser.service.parser.ListMgmt.db.DbClass;
 import com.glocks.web_parser.validator.Validation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 import java.io.PrintWriter;
@@ -51,6 +54,8 @@ public class BlackListUtils {
     OperatorSeriesService operatorSeriesService;
     @Autowired
     DbClass dbClass;
+    @Autowired
+    CommonFunctions commonFunctions;
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     public boolean processBlackSingleAddEntry(ListDataMgmt listDataMgmt, ListMgmtDto record, int type, PrintWriter writer) {
@@ -69,10 +74,10 @@ public class BlackListUtils {
             // if present write in file and exit.
             if (blackList != null) {
                 logger.info("The entry already exists {}", blackList);
-                if(Objects.nonNull(blackList.getSource())){
+                if (Objects.nonNull(blackList.getSource())) {
                     if (!blackList.getSource().equalsIgnoreCase(listDataMgmt.getCategory())) {
-                        String source = this.isSourceExist.apply(blackList.getSource(), listDataMgmt.getCategory());
-                        dbClass.updateSource(source, blackList.getImei(), "BLACK_LIST");
+                        String source = commonFunctions.isSourceExist.apply(blackList.getSource(), listDataMgmt.getCategory());
+                        dbClass.updateSource(source, blackList, "BLACK_LIST");
                     }
                 }
                 writer.println((msisdnEmpty ? "" : msisdn) + "," + (imsiEmpty ? "" : imsi) + "," + (imeiEmpty ? "" : imei) + "," + dbConfigService.getValue("msgForAlreadyExistsInBlackList"));
@@ -103,13 +108,22 @@ public class BlackListUtils {
                     writer.println((msisdnEmpty ? "" : msisdn) + "," + (imsiEmpty ? "" : imsi) + "," + (imeiEmpty ? "" : imei) + "," + dbConfigService.getValue("msgForAlreadyExistsInGreyList"));
                     return false;
                 }
-                logger.info("Entry save in black list {}", blackList);
-                blackList.setReason(sysParamRepository.getValueFromTag("blackListAddReasonCode"));
-                blackList.setClarifyReason(sysParamRepository.getValueFromTag("blackListAddClarifyReason"));
-                blackListRepository.save(blackList);
+                logger.info("Entry going to save in black list {}", blackList);
+                blackList.setReason(commonFunctions.getValue("blackListAddReasonCode"));
+                blackList.setClarifyReason(commonFunctions.getValue("blackListAddClarifyReason"));
+                try {
+                    blackListRepository.save(blackList);
+                } catch (DataIntegrityViolationException e) {
+                    logger.info("record already exist for  blackList {}", blackList);
+                }
+
                 BlackListHis blackListHisEntity = BlackListHisBuilder.forInsert(blackList, 1, listDataMgmt);
-                logger.info("Entry save in black list his {}", blackListHisEntity);
-                blackListHisRepository.save(blackListHisEntity);
+                try {
+                    blackListHisRepository.save(blackListHisEntity);
+                    logger.info("Entry save in black list his {}", blackListHisEntity);
+                } catch (DataIntegrityViolationException e) {
+                    logger.info("record already exist for  blackListHisEntity {}", blackListHisEntity.getId());
+                }
 //                writer.println(msisdn+","+imsi+","+imei+","+"ADDED");
                 writer.println((msisdnEmpty ? "" : msisdn) + "," + (imsiEmpty ? "" : imsi) + "," + (imeiEmpty ? "" : imei) + "," + dbConfigService.getValue("msgForAddedInExceptionList"));
 
@@ -143,8 +157,7 @@ public class BlackListUtils {
             if (blackList != null) {
                 logger.info("The entry already exists {}", blackList);
                 //    String operatorName = operatorSeriesService.getOperatorName(imsiEmpty, msisdnEmpty, imsi, msisdn);
-                logger.info("listDataMgmt {}", listDataMgmt);
-                int val = (int) this.sourceCount.apply(blackList.getSource(), listDataMgmt.getCategory()).longValue();
+                int val = (int) commonFunctions.sourceCount.apply(blackList.getSource(), listDataMgmt.getCategory()).longValue();
 
                 switch (val) {
                     case 0 -> {
@@ -155,18 +168,17 @@ public class BlackListUtils {
 
                     case 1 -> {
                         logger.info("Entry deleted in black list {}", blackList);
-                        blackList.setReason(sysParamRepository.getValueFromTag("blackListDelReasonCode"));
-                        blackList.setClarifyReason(sysParamRepository.getValueFromTag("blackListDelClarifyReason"));
-
+                        blackList.setReason(commonFunctions.getValue("blackListDelReasonCode"));
+                        blackList.setClarifyReason(commonFunctions.getValue("blackListDelClarifyReason"));
                         blackListRepository.delete(blackList);
                         BlackListHis blackListHisEntity = BlackListHisBuilder.forInsert(blackList, 0, listDataMgmt);
                         logger.info("Entry save in black list his {}", blackListHisEntity);
                         blackListHisRepository.save(blackListHisEntity);
                     }
                     case 2 -> {
-                        String source = this.removeSource.apply(blackList.getSource(), listDataMgmt.getCategory());
+                        String source = commonFunctions.removeSource.apply(blackList.getSource(), listDataMgmt.getCategory());
                         logger.info("black_list updated with source {}", source);
-                        dbClass.updateSource(source, blackList.getImei(), "BLACK_LIST");
+                        dbClass.updateSource(source, blackList, "BLACK_LIST");
                     }
                 }
                 if (isvalidRequest) {
@@ -194,51 +206,4 @@ public class BlackListUtils {
 
         }
     }
-
-
-    public BiFunction<String, String, Long> sourceCount = (source, categoryValue) -> {
-        String category = categoryValue.equalsIgnoreCase("Other") ? "CEIRAdmin" : categoryValue;
-        if (Objects.nonNull(source)) {
-            String[] split = source.split(",");
-            boolean exists = Arrays.asList(split).contains(category);
-
-            if (exists) {
-                return split.length == 1 ? 1L : 2L;
-            }
-        }
-        logger.info("No source value {} matched", source);
-        return 0L;
-    };
-
-    public BiFunction<String, String, String> isSourceExist = (source, categoryValue) -> {
-        String category = categoryValue.equalsIgnoreCase("Other") ? "CEIRAdmin" : categoryValue;
-        if (Objects.nonNull(source)) {
-            String[] split = source.split(",");
-            boolean exists = Arrays.asList(split).contains(category);
-
-            if (!exists) {
-                return source + "," + category;
-            }
-        }
-        logger.info("No source value {} matched", categoryValue);
-        return "";
-    };
-
-    public BiFunction<String, String, String> removeSource = (source, categoryValue) -> {
-        String category = categoryValue.equalsIgnoreCase("Other") ? "CEIRAdmin" : categoryValue;
-
-        if (Objects.nonNull(source)) {
-            String result = Arrays.stream(source.split(","))
-                    .map(String::trim)
-                    .filter(element -> !element.equals(category))
-                    .collect(Collectors.joining(","));
-
-            logger.info("Updated source  {} after removing {}", category, result);
-            return result;
-        }
-
-        logger.info("Source is null");
-        return "";
-    };
-
 }

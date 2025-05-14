@@ -11,7 +11,6 @@ import java.sql.SQLException;
 import java.util.List;
 
 @Repository
-@Transactional(rollbackOn = {SQLException.class})
 public interface ExceptionListRepository extends JpaRepository<ExceptionList, Integer> {
 
     ExceptionList findExceptionListByImeiAndMsisdnAndImsi(String imei, String msisdn, String imsi);
@@ -28,6 +27,7 @@ public interface ExceptionListRepository extends JpaRepository<ExceptionList, In
 
     ExceptionList findExceptionListByMsisdn(String msisdn);
 
+    @Transactional(rollbackOn = {SQLException.class})
     @Modifying
     @Query("UPDATE ExceptionList x SET x.source =:source WHERE x.imei =:imei")
     public int updateSource(String source, String imei);

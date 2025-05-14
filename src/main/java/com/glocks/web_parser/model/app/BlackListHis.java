@@ -75,7 +75,9 @@ public class BlackListHis {
     @Column(name="source_of_request")
     String source;
 
+    @Column(name = "reason")
     String reason;
+
     @Column(name="clarify_reason")
 
     String clarifyReason;
