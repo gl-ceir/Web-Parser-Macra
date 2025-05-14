@@ -11,8 +11,5 @@ import java.sql.SQLException;
 
 @Repository
 public interface BlackListHisRepository extends JpaRepository<BlackListHis, Integer> {
-    @Transactional(rollbackOn = {SQLException.class})
-    @Modifying
-    @Query("UPDATE BlackListHis x SET x.source =:source WHERE x.imei =:imei")
-    public int updateSource(String source, String imei);
+
 }

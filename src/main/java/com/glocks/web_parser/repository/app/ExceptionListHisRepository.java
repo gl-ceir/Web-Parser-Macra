@@ -12,8 +12,5 @@ import java.sql.SQLException;
 
 @Repository
 public interface ExceptionListHisRepository extends JpaRepository<ExceptionListHis, Integer> {
-    @Transactional(rollbackOn = {SQLException.class})
-    @Modifying
-    @Query("UPDATE ExceptionListHis x SET x.source =:source WHERE x.imei =:imei")
-    public int updateSource(String source, String imei);
+
 }
