@@ -31,9 +31,7 @@ public class BlackListBuilder {
         blackList.setUserId(listDataMgmt.getUserId());
 //        exceptionList.setUserType(listDataMgmt.getUserType());
         blackList.setTac(((listDataMgmt.getImei() == null) || (listDataMgmt.getImei().equalsIgnoreCase(""))) ? null : listDataMgmt.getImei().substring(0, 8));
-        String source = Optional.ofNullable(CategoryType.getCategory(listDataMgmt.getCategory()))
-                .map(CategoryType::getCategory)
-                .orElse(null);
+        String source = CategoryType.getCategory(listDataMgmt.getCategory());
         blackList.setSource(source);
         return blackList;
     }

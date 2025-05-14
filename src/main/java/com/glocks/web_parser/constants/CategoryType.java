@@ -1,7 +1,7 @@
 package com.glocks.web_parser.constants;
 
 public enum CategoryType {
-    FRAUD("Fraud"),
+    Fraud("Fraud"),
     Other("CEIRAdmin"),
     CEIRAdmin("CEIRAdmin");
 

@@ -111,14 +111,6 @@ public class DbClass {
         return blockedTacList;
     }
 
-    public String remove(String source) {
-        if (Objects.nonNull(source)) {
-            return Arrays.stream(source.split(",")).filter(element -> !element.equals("CEIRAdmin")).collect(Collectors.joining(","));
-        } else {
-            logger.info("No source value {} found", source);
-        }
-        return null;
-    }
 
     public void updateSource(String source, BlackList blackList, String repo) {
         logger.info("Updated {} with source {} for imei {}", repo, source, blackList.getImei());
