@@ -17,21 +17,19 @@ public interface BlackListRepository extends JpaRepository<BlackList, Integer> {
 
     BlackList findBlackListByImeiAndMsisdnAndImsi(String imei, String msisdn, String imsi);
 
-    BlackList findBlackListByImeiAndImsi(String imei, String imsi);
+    BlackList findBlackListByImeiAndImsiAndMsisdnIsNull(String imei, String imsi);
 
-    BlackList findBlackListByImeiAndMsisdn(String imei, String msisdn);
+    BlackList findBlackListByImeiAndMsisdnAndImsiIsNull(String imei, String msisdn);
 
-    BlackList findBlackListByImsiAndMsisdn(String imsi, String msisdn);
+    BlackList findBlackListByImsiAndMsisdnAndImeiIsNull(String imsi, String msisdn);
 
-    BlackList findBlackListByImsi(String imsi);
+    BlackList findBlackListByImsiAndImeiIsNullAndMsisdnIsNull(String imsi);
 
-    BlackList findBlackListByImei(String imei);
+    BlackList findBlackListByImeiAndImsiIsNullAndMsisdnIsNull(String imei);
 
-    BlackList findBlackListByMsisdn(String msisdn);
+    BlackList findBlackListByMsisdnAndImsiIsNullAndImeiIsNull(String msisdn);
 
-    @Transactional(rollbackOn = {SQLException.class})
     @Modifying
     @Query("UPDATE BlackList x SET x.source =:source WHERE x.imei =:imei AND x.imsi =:imsi AND x.msisdn=:msisdn")
     public int updateSource(String source, String imei, String imsi, String msisdn);
-
 }

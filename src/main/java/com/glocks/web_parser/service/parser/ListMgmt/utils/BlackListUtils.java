@@ -17,6 +17,7 @@ import com.glocks.web_parser.service.operatorSeries.OperatorSeriesService;
 import com.glocks.web_parser.service.parser.ListMgmt.CommonFunctions;
 import com.glocks.web_parser.service.parser.ListMgmt.db.DbClass;
 import com.glocks.web_parser.validator.Validation;
+import jakarta.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +25,7 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 import java.io.PrintWriter;
+import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.Objects;
 import java.util.function.BiFunction;
@@ -58,6 +60,7 @@ public class BlackListUtils {
     CommonFunctions commonFunctions;
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
+    @Transactional(rollbackOn = {SQLException.class})
     public boolean processBlackSingleAddEntry(ListDataMgmt listDataMgmt, ListMgmtDto record, int type, PrintWriter writer) {
         String imsi = type == 1 ? listDataMgmt.getImsi() : record.getImsi().trim();
         String imei = type == 1 ? listDataMgmt.getImei() : record.getImei();
@@ -139,6 +142,7 @@ public class BlackListUtils {
         }
     }
 
+    @Transactional(rollbackOn = {SQLException.class})
     public boolean processBlackSingleDelEntry(ListDataMgmt listDataMgmt, ListMgmtDto record, int type, PrintWriter writer) {
         String imsi = type == 1 ? listDataMgmt.getImsi() : record.getImsi();
         String imei = type == 1 ? listDataMgmt.getImei() : record.getImei();
