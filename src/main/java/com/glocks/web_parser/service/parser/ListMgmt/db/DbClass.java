@@ -6,16 +6,10 @@ import com.glocks.web_parser.model.app.ExceptionList;
 import com.glocks.web_parser.model.app.GreyList;
 import com.glocks.web_parser.repository.app.*;
 import com.glocks.web_parser.validator.Validation;
-import jakarta.transaction.Transactional;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.sql.SQLException;
-import java.util.Arrays;
-import java.util.Objects;
-import java.util.stream.Collectors;
 
 @Service
 public class DbClass {
@@ -39,8 +33,7 @@ public class DbClass {
     @Autowired
     Validation validation;
 
-    public GreyList getGreyListEntry(boolean imsiEmpty, boolean msisdnEmpty, boolean imeiEmpty, String imei,
-                                     String imsi, String msisdn) {
+    public GreyList getGreyListEntry(boolean imsiEmpty, boolean msisdnEmpty, boolean imeiEmpty, String imei, String imsi, String msisdn) {
         GreyList greyList = null;
         if (!imsiEmpty && !imeiEmpty && !msisdnEmpty) {
             greyList = greyListRepository.findGreyListByImeiAndMsisdnAndImsi(imei.substring(0, 14), msisdn, imsi);
@@ -61,8 +54,7 @@ public class DbClass {
 
     }
 
-    public BlackList getBlackListEntry(boolean imsiEmpty, boolean msisdnEmpty, boolean imeiEmpty, String imei,
-                                       String imsi, String msisdn) {
+    public BlackList getBlackListEntry(boolean imsiEmpty, boolean msisdnEmpty, boolean imeiEmpty, String imei, String imsi, String msisdn) {
         BlackList blackList = null;
         if (!imsiEmpty && !imeiEmpty && !msisdnEmpty) {
             blackList = blackListRepository.findBlackListByImeiAndMsisdnAndImsi(imei.substring(0, 14), msisdn, imsi);
@@ -83,8 +75,7 @@ public class DbClass {
 
     }
 
-    public ExceptionList getExceptionListEntry(boolean imsiEmpty, boolean msisdnEmpty, boolean imeiEmpty, String imei,
-                                               String imsi, String msisdn) {
+    public ExceptionList getExceptionListEntry(boolean imsiEmpty, boolean msisdnEmpty, boolean imeiEmpty, String imei, String imsi, String msisdn) {
 
         ExceptionList exceptionList = null;
         if (!imsiEmpty && !imeiEmpty && !msisdnEmpty) {
@@ -134,22 +125,4 @@ public class DbClass {
             logger.error("Exception occured during update the entry for imei {} with message {}", imei, e.getCause());
         }
     }
-
-
-/*    @Transactional(rollbackOn = {SQLException.class})
-    public void delete(BlackList blackList) {
-        String imsi = validation.isEmptyAndNull(blackList.getImsi()) ? null : blackList.getImsi();
-        String msisdn = validation.isEmptyAndNull(blackList.getMsisdn()) ? null : blackList.getMsisdn();
-        String imei = validation.isEmptyAndNull(blackList.getImei()) ? null : blackList.getImei();
-        logger.info("The corresponding row in the black_list  will be delete based on the imsi {} , msisdn {} and imei {}", imsi, msisdn, imei);
-        try {
-            int rowAffected = blackListRepository.delete(imei, imsi, msisdn);
-
-            if (rowAffected > 0) {
-                logger.info("The record associated with IMEI {}, IMSI {}, and MSISDN {} has been successfully deleted.", imei, imsi, msisdn);
-            }
-        } catch (Exception e) {
-            logger.error("Exception occured during delete the entry for imei {} with message {}", imei, e.getCause());
-        }
-    }*/
 }
