@@ -1,9 +1,13 @@
 package com.glocks.web_parser.repository.app;
 
 import com.glocks.web_parser.model.app.ExceptionList;
+import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import java.sql.SQLException;
 import java.util.List;
 
 @Repository
@@ -22,4 +26,9 @@ public interface ExceptionListRepository extends JpaRepository<ExceptionList, In
     ExceptionList findExceptionListByImei(String imei);
 
     ExceptionList findExceptionListByMsisdn(String msisdn);
+
+    @Transactional(rollbackOn = {SQLException.class})
+    @Modifying
+    @Query("UPDATE ExceptionList x SET x.source =:source WHERE x.imei =:imei")
+    public int updateSource(String source, String imei);
 }

@@ -17,7 +17,7 @@ import java.time.LocalDateTime;
 
 @Entity
 @Data
-@Table(name="exception_list")
+@Table(name = "exception_list")
 public class ExceptionList {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -25,48 +25,52 @@ public class ExceptionList {
 
     @CreationTimestamp
     @Temporal(TemporalType.TIMESTAMP)
-    @Column(name="created_on")
+    @Column(name = "created_on")
     LocalDateTime createdOn;
 
     @UpdateTimestamp
     @Temporal(TemporalType.TIMESTAMP)
-    @Column(name="modified_on")
+    @Column(name = "modified_on")
     LocalDateTime modifiedOn;
 
-    @Column(name="imsi")
+    @Column(name = "imsi")
     String imsi;
 
-    @Column(name="msisdn")
+    @Column(name = "msisdn")
     String msisdn;
 
-    @Column(name="imei")
+    @Column(name = "imei")
     String imei;
 
-    @Column(name="mode_type")
+    @Column(name = "mode_type")
     String modeType;
 
 
-    @Column(name="request_type")
+    @Column(name = "request_type")
     String requestType;
 
-    @Column(name="txn_id")
+    @Column(name = "txn_id")
     String txnId;
 
-    @Column(name="user_id")
+    @Column(name = "user_id")
     String userId;
 
-    @Column(name="operator_name")
+    @Column(name = "operator_name")
     String operatorName;
 
-    @Column(name="actual_imei")
+    @Column(name = "actual_imei")
     String actualImei;
 
-    @Column(name="tac")
+    @Column(name = "tac")
     String tac;
 
-    @Column(name="remarks")
+    @Column(name = "remarks")
     String remarks;
 
-    @Column(name="source_of_request")
+    @Column(name = "source_of_request")
     String source;
+    @Column(name = "reason")
+    String reason;
+    @Column(name = "clarify_reason")
+    String clarifyReason;
 }

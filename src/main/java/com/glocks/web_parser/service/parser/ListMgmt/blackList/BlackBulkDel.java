@@ -60,16 +60,13 @@ public class BlackBulkDel implements IRequestTypeAction {
 
     @Override
     public  void executeInitProcess(WebActionDb webActionDb, ListDataMgmt listDataMgmt) {
-        logger.info("Starting the init process for black list, for request {} and action {}",
-                listDataMgmt.getRequestMode(), listDataMgmt.getAction());
+        logger.info("listDataMgmt request {}", listDataMgmt);
 
         webActionDbRepository.updateWebActionStatus(2, webActionDb.getId());
         executeValidateProcess(webActionDb, listDataMgmt);
 
     }
     public void executeValidateProcess(WebActionDb webActionDb, ListDataMgmt listDataMgmt) {
-        logger.info("Starting the validate process for black list, for request {} and action {}",
-                listDataMgmt.getRequestMode(), listDataMgmt.getAction());
 
         try {
 
