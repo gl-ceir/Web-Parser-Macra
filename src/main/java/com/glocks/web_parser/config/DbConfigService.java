@@ -1,12 +1,8 @@
 package com.glocks.web_parser.config;
 
 
-
-import com.glocks.web_parser.constants.ConfigFlag;
 import com.glocks.web_parser.model.app.EirsResponseParam;
-import com.glocks.web_parser.model.app.SysParam;
 import com.glocks.web_parser.repository.app.EirsResponseParamRepository;
-import com.glocks.web_parser.repository.app.SysParamRepository;
 import jakarta.annotation.PostConstruct;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,14 +30,22 @@ public class DbConfigService {
         loadAllConfig();
     }
 
-//    @Override
+    //    @Override
     public void loadAllConfig() {
         List<String> modules = new ArrayList<>();
-        modules.add("TRC Management"); modules.add("List Management"); modules.add("Bulk Check IMEI");
-        List<EirsResponseParam> fullConfigFlag = eirsResponseParamRepository.findAll();
-        for (EirsResponseParam configFlagElement : fullConfigFlag) {
+       // modules.add("TRC Management");
+        modules.add("List Management");
+      //  modules.add("Bulk Check IMEI");
+        List<EirsResponseParam> fullConfigFlag = eirsResponseParamRepository.findByFeatureNameIn(modules);
+       /* for (EirsResponseParam configFlagElement : fullConfigFlag) {
             configFlagHM.put(configFlagElement.getTag(), configFlagElement.getValue());
             logger.info("Filled Config tag:{} value:{}", configFlagElement.getTag(), configFlagElement.getValue());
+        }*/
+        for (EirsResponseParam configFlagElement : fullConfigFlag) {
+            if (configFlagElement.getTag() != null && configFlagElement.getValue() != null) {
+                configFlagHM.put(configFlagElement.getTag(), configFlagElement.getValue());
+                logger.info("Filled Config tag:{} value:{}", configFlagElement.getTag(), configFlagElement.getValue());
+            }
         }
         logger.info("Config flag data load count : {}", configFlagHM.size());
     }
@@ -50,7 +54,6 @@ public class DbConfigService {
         String t = configFlagHM.get(tag);
         return t;
     }
-
 
 
 }
